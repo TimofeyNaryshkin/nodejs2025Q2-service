@@ -1,14 +1,25 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Album } from './interfaces/album.interface';
 import { AlbumDto } from './dto/album.dto';
 import { v4 as uuidv4 } from 'uuid';
+import { FavoritesService } from 'src/favorites/favorites.service';
 import { TracksService } from 'src/tracks/tracks.service';
 
 @Injectable()
 export class AlbumsService {
   private albums: Album[] = [];
 
-  constructor(private tracksService: TracksService) {}
+  constructor(
+    @Inject(forwardRef(() => FavoritesService))
+    private readonly favoritesService: FavoritesService,
+    @Inject(forwardRef(() => TracksService))
+    private tracksService: TracksService,
+  ) {}
 
   getAll() {
     return this.albums;
@@ -55,10 +66,10 @@ export class AlbumsService {
     if (albumIndex === -1) {
       throw new NotFoundException(`Artist with id ${id} not found`);
     }
-
+    this.favoritesService.removeAlbum(id);
     this.albums.splice(albumIndex, 1);
 
-    this.tracksService.nullifyAlbumId(id)
+    this.tracksService.nullifyAlbumId(id);
   }
 
   nullifyArtistId(artistId: string) {
