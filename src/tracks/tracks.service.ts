@@ -1,4 +1,9 @@
-import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Track } from './interfaces/track.interface';
 import { v4 as uuidv4 } from 'uuid';
 import { TrackDto } from './dto/track.dto';
@@ -10,7 +15,7 @@ export class TracksService {
 
   constructor(
     @Inject(forwardRef(() => FavoritesService))
-    private readonly favoritesService: FavoritesService
+    private readonly favoritesService: FavoritesService,
   ) {}
 
   getAll() {

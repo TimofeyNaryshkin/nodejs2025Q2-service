@@ -38,7 +38,7 @@ export class UsersService {
       updatedAt: timestamp,
     };
     this.users.push(user);
-    return user
+    return user;
   }
 
   updatePassword(id: string, dto: UpdatePasswordDto) {
@@ -57,7 +57,7 @@ export class UsersService {
     user.version += 1;
     user.updatedAt = Date.now();
 
-    return user
+    return user;
   }
 
   delete(id: string) {

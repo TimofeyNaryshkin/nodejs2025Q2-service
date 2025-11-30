@@ -14,7 +14,6 @@ import {
 import { ArtistsService } from './artists.service';
 import { ArtistDto } from './dto/artist.dto';
 
-
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('artist')
 export class ArtistsController {
