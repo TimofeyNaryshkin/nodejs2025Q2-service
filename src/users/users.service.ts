@@ -49,8 +49,6 @@ export class UsersService {
       throw new NotFoundException(`User with id ${id} not found`);
     }
 
-    console.log(user.password, dto)
-
     if (user.password !== oldPassword) {
       throw new ForbiddenException(`Old password is incorrect`);
     }
