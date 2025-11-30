@@ -15,9 +15,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('RSS Nodejs2025Q2-REST Service')
-    .setDescription(
-      'Home Library Service! Users can create, read, update, delete data about Artists, Tracks and Albums, add them to Favorites in their own Home Library!',
-    )
+    .setDescription('Home music library service')
     .setVersion('1.0')
     .build();
   const documnetFactory = () => SwaggerModule.createDocument(app, config);
