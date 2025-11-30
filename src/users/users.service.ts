@@ -33,7 +33,7 @@ export class UsersService {
       id: uuidv4(),
       login,
       password,
-      version: 0,
+      version: 1,
       createdAt: timestamp,
       updatedAt: timestamp,
     };
