@@ -35,7 +35,6 @@ export class FavoritesService {
       this.artistsService.getById(artistId),
     );
 
-    console.log({ artists, albums, tracks });
     return { artists, albums, tracks };
   }
 
