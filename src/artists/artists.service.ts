@@ -3,12 +3,16 @@ import { v4 as uuidv4 } from 'uuid';
 import { Artist } from './interfaces/artist.interface';
 import { ArtistDto } from './dto/artist.dto';
 import { TracksService } from 'src/tracks/tracks.service';
+import { AlbumsService } from 'src/albums/albums.service';
 
 @Injectable()
 export class ArtistsService {
   private artists: Artist[] = [];
 
-  constructor(private readonly tracksService: TracksService) {}
+  constructor(
+    private readonly tracksService: TracksService,
+    private readonly albumsServise: AlbumsService,
+  ) {}
 
   getAll() {
     return this.artists;
@@ -29,7 +33,7 @@ export class ArtistsService {
     const artist: Artist = {
       id: uuidv4(),
       name,
-      grammy
+      grammy,
     };
     this.artists.push(artist);
     return artist;
@@ -57,6 +61,7 @@ export class ArtistsService {
 
     this.artists.splice(artistIndex, 1);
 
-    this.tracksService.nullifyArtistId(id)
+    this.tracksService.nullifyArtistId(id);
+    this.albumsServise.nullifyArtistId(id)
   }
 }

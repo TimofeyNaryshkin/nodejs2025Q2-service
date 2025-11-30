@@ -64,4 +64,12 @@ export class TracksService {
       }
     });
   }
+
+  nullifyAlbumId(albumId: string) {
+    this.tracks.forEach((t) => {
+      if (t.albumId === albumId) {
+        t.albumId = null;
+      }
+    });
+  }
 }
