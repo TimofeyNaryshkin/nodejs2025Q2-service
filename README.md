@@ -11,10 +11,22 @@
 git clone {repository URL}
 ```
 
+## Switching branch
+
+```
+git checkout dev
+```
+
 ## Installing NPM modules
 
 ```
 npm install
+```
+
+## Create environment file
+
+```
+cp .env.example .env
 ```
 
 ## Running application
