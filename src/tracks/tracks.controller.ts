@@ -1,5 +1,6 @@
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -8,10 +9,12 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
+  UseInterceptors,
 } from '@nestjs/common';
 import { TracksService } from './tracks.service';
 import { TrackDto } from './dto/track.dto';
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('track')
 export class TracksController {
   constructor(private tracksService: TracksService) {}

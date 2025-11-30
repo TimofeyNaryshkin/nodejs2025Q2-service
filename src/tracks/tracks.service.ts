@@ -12,7 +12,7 @@ export class TracksService {
   }
 
   getById(id: string) {
-    const track = this.tracks.find((u) => u.id === id);
+    const track = this.tracks.find((t) => t.id === id);
 
     if (!track) {
       throw new NotFoundException(`Track with id ${id} not found`);
@@ -55,5 +55,13 @@ export class TracksService {
     }
 
     this.tracks.splice(trackIndex, 1);
+  }
+
+  nullifyArtistId(artistId: string) {
+    this.tracks.forEach((t) => {
+      if (t.artistId === artistId) {
+        t.artistId = null;
+      }
+    });
   }
 }
