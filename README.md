@@ -4,7 +4,7 @@
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
-
+- [Docker](https://www.docker.com/)
 ## Downloading
 
 ```
@@ -14,13 +14,7 @@ git clone {repository URL}
 ## Switching branch
 
 ```
-git checkout dev
-```
-
-## Installing NPM modules
-
-```
-npm install
+git checkout feat/Containerization_Docker_Database_ORM
 ```
 
 ## Create environment file
@@ -29,15 +23,52 @@ npm install
 cp .env.example .env
 ```
 
-## Running application
+## Environment Variables
 
+| Variable | Description | Default |
+|----------|-------------|---------|
+| PORT | Application port | 4000 |
+| DB_PORT | Database port | 5432 |
+| POSTGRES_USER | Database user | postgres |
+| POSTGRES_PASSWORD | Database password | postgres |
+| POSTGRES_DB | Database name | mydb |
+| DATABASE_URL | Full database connection string | - |
+
+## Running with Docker
+
+```bash
+docker-compose up --build --watch
 ```
-npm start
+
+## Stop containers
+
+```bash
+docker-compose down
 ```
 
 After starting the app on port (4000 as default) you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
+
+## Vulnerability Scanning
+
+```bash
+npm run audit
+```
+
+## Docker Hub
+
+Images are available at:
+
+- App: `timofeinaryshkin/home-library-app`
+- Database: `timofeinaryshkin/home-library-db`
+
+### Pull and run from Docker Hub
+
+```bash
+docker pull timofeinaryshkin/home-library-app:latest
+docker pull timofeinaryshkin/home-library-db:latest
+```
 
 ## Testing
 
