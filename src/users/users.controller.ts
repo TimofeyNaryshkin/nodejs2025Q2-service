@@ -22,34 +22,34 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get()
-  getAll(): UserEntity[] {
-    const users = this.usersService.getAll();
+  async getAll() {
+    const users = await this.usersService.getAll();
     return users.map((u) => new UserEntity(u));
   }
 
   @Get(':id')
-  getById(@Param('id', ParseUUIDPipe) id: string) {
-    return new UserEntity(this.usersService.getById(id));
+  async getById(@Param('id', ParseUUIDPipe) id: string) {
+    return new UserEntity(await this.usersService.getById(id));
   }
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return new UserEntity(this.usersService.create(createUserDto));
+  async create(@Body() createUserDto: CreateUserDto) {
+    return new UserEntity(await this.usersService.create(createUserDto));
   }
 
   @Put(':id')
-  updatePassword(
+  async updatePassword(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updatePasswordDto: UpdatePasswordDto,
   ) {
     return new UserEntity(
-      this.usersService.updatePassword(id, updatePasswordDto),
+      await this.usersService.updatePassword(id, updatePasswordDto),
     );
   }
 
   @Delete(':id')
   @HttpCode(204)
-  delete(@Param('id', ParseUUIDPipe) id: string) {
-    this.usersService.delete(id);
+  async delete(@Param('id', ParseUUIDPipe) id: string) {
+    await this.usersService.delete(id);
   }
 }

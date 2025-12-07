@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Artist } from './interfaces/artist.interface';
 import { ArtistDto } from './dto/artist.dto';
 import { DatabaseService } from 'src/database/database.service';
 
@@ -7,23 +6,23 @@ import { DatabaseService } from 'src/database/database.service';
 export class ArtistsService {
   constructor(private readonly dbService: DatabaseService) {}
 
-  getAll() {
+  async getAll() {
     return this.dbService.getAllArtists();
   }
 
-  getById(id: string) {
+  async getById(id: string) {
     return this.dbService.getArtistById(id);
   }
 
-  create(dto: ArtistDto) {
+  async create(dto: ArtistDto) {
     return this.dbService.createArtist(dto);
   }
 
-  update(id: string, dto: ArtistDto): Artist {
+  async update(id: string, dto: ArtistDto) {
     return this.dbService.updateArtist(id, dto);
   }
 
-  delete(id: string) {
-    return this.dbService.deleteArtist(id);
+  async delete(id: string) {
+    await this.dbService.deleteArtist(id);
   }
 }

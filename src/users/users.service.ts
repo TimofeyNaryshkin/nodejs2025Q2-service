@@ -7,23 +7,23 @@ import { DatabaseService } from 'src/database/database.service';
 export class UsersService {
   constructor(private readonly dbService: DatabaseService) {}
 
-  getAll() {
+  async getAll() {
     return this.dbService.getAllUsers();
   }
 
-  getById(id: string) {
+  async getById(id: string) {
     return this.dbService.getUserById(id);
   }
 
-  create(dto: CreateUserDto) {
+  async create(dto: CreateUserDto) {
     return this.dbService.createUser(dto);
   }
 
-  updatePassword(id: string, dto: UpdatePasswordDto) {
+  async updatePassword(id: string, dto: UpdatePasswordDto) {
     return this.dbService.updateUserPassword(id, dto);
   }
 
-  delete(id: string) {
-    return this.dbService.deleteUser(id);
+  async delete(id: string) {
+    await this.dbService.deleteUser(id);
   }
 }

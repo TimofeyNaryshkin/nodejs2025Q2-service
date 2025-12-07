@@ -5,31 +5,31 @@ import { DatabaseService } from 'src/database/database.service';
 export class FavoritesService {
   constructor(private readonly dbService: DatabaseService) {}
 
-  getAll() {
+  async getAll() {
     return this.dbService.getAllFavorites();
   }
 
-  addTrack(id: string) {
+  async addTrack(id: string) {
     return this.dbService.addTrackToFavorites(id);
   }
 
-  removeTrack(id: string) {
-    this.dbService.removeTrackFromFavorites(id);
+  async removeTrack(id: string) {
+    await this.dbService.removeTrackFromFavorites(id);
   }
 
-  addAlbum(id: string) {
+  async addAlbum(id: string) {
     return this.dbService.addAlbumToFavorites(id);
   }
 
-  removeAlbum(id: string) {
-    this.dbService.removeAlbumFromFavorites(id);
+  async removeAlbum(id: string) {
+    await this.dbService.removeAlbumFromFavorites(id);
   }
 
-  addArtist(id: string) {
+  async addArtist(id: string) {
     return this.dbService.addArtistToFavorites(id);
   }
 
-  removeArtist(id: string) {
-    this.dbService.removeArtistFromFavorites(id);
+  async removeArtist(id: string) {
+    await this.dbService.removeArtistFromFavorites(id);
   }
 }
