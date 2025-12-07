@@ -8,8 +8,8 @@ export class UserEntity {
   password: string;
 
   version: number; // integer number, increments on update
-  createdAt: Date; // timestamp of creation
-  updatedAt: Date; // timestamp of last update
+  createdAt: number; // timestamp of creation
+  updatedAt: number; // timestamp of last update
 
   constructor(partial: Partial<UserEntity>) {
     Object.assign(this, partial);

@@ -1,6 +1,49 @@
 services:
   app:
-    image: my-app
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./src
+          target: /app/src
+          ignore:
+            - node-modules/
     ports:
-      - "4000:4000"
+      - '${PORT}:${PORT}'
+    environment:
+      - PORT=${PORT}
+      - DATABASE_URL=${DATABASE_URL}
+    depends_on:
+      - db
+    networks:
+      - app-network
+    restart: always
+
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
+    environment:
+      - DB_PORT=${DB_PORT}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - pglogs:/var/log/postgresql
+    ports:
+      - '${DB_PORT}:${DB_PORT}'
+    networks:
+      - app-network
+    restart: always
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  pgdata:
+  pglogs:

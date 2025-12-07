@@ -20,7 +20,12 @@ export class DatabaseService {
   constructor(private prisma: PrismaService) {}
 
   async getAllUsers() {
-    return this.prisma.user.findMany();
+    const users = await this.prisma.user.findMany();
+    return users.map((u) => ({
+      ...u,
+      createdAt: u.createdAt.getTime(),
+      updatedAt: u.updatedAt.getTime(),
+    }));
   }
 
   async getUserById(id: string) {
@@ -30,11 +35,20 @@ export class DatabaseService {
       throw new NotFoundException(`User with id ${id} not found`);
     }
 
-    return user;
+    return {
+      ...user,
+      createdAt: user.createdAt.getTime(),
+      updatedAt: user.updatedAt.getTime(),
+    };
   }
 
   async createUser(dto: CreateUserDto) {
-    return this.prisma.user.create({ data: dto });
+    const user = await this.prisma.user.create({ data: dto });
+    return {
+      ...user,
+      createdAt: user.createdAt.getTime(),
+      updatedAt: user.updatedAt.getTime(),
+    };
   }
 
   async updateUserPassword(id: string, dto: UpdatePasswordDto) {
@@ -49,13 +63,18 @@ export class DatabaseService {
       throw new ForbiddenException(`Old password is incorrect`);
     }
 
-    return this.prisma.user.update({
+    const updatedUser = await this.prisma.user.update({
       where: { id },
       data: {
         password: newPassword,
         version: { increment: 1 },
       },
     });
+    return {
+      ...updatedUser,
+      createdAt: updatedUser.createdAt.getTime(),
+      updatedAt: updatedUser.updatedAt.getTime(),
+    };
   }
 
   async deleteUser(id: string) {
@@ -92,7 +111,7 @@ export class DatabaseService {
 
   async updateTrack(id: string, dto: TrackDto): Promise<Track> {
     try {
-      return this.prisma.track.update({
+      return await this.prisma.track.update({
         where: { id },
         data: dto,
       });
@@ -141,7 +160,7 @@ export class DatabaseService {
 
   async updateAlbum(id: string, dto: AlbumDto): Promise<Album> {
     try {
-      return this.prisma.album.update({
+      return await this.prisma.album.update({
         where: { id },
         data: dto,
       });
@@ -190,7 +209,7 @@ export class DatabaseService {
 
   async updateArtist(id: string, dto: ArtistDto): Promise<Artist> {
     try {
-      return this.prisma.artist.update({
+      return await this.prisma.artist.update({
         where: { id },
         data: dto,
       });
@@ -240,7 +259,7 @@ export class DatabaseService {
         `Track with id ${id} doesn't exist`,
       );
     }
-    this.prisma.favoriteTrack.create({ data: { trackId: id } });
+    await this.prisma.favoriteTrack.create({ data: { trackId: id } });
     return 'Track was added to favorites';
   }
 
@@ -265,7 +284,7 @@ export class DatabaseService {
         `Album with id ${id} doesn't exist`,
       );
     }
-    this.prisma.favoriteAlbum.create({ data: { albumId: id } });
+    await this.prisma.favoriteAlbum.create({ data: { albumId: id } });
     return 'Album was added to favorites';
   }
 
@@ -290,7 +309,7 @@ export class DatabaseService {
         `Artist with id ${id} doesn't exist`,
       );
     }
-    this.prisma.favoriteArtist.create({ data: { artistId: id } });
+    await this.prisma.favoriteArtist.create({ data: { artistId: id } });
     return 'Artist was added to favorites';
   }
 
