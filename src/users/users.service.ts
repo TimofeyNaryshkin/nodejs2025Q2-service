@@ -1,72 +1,29 @@
-import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { User } from './interfaces/user.interface';
+import { Injectable } from '@nestjs/common';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { CreateUserDto } from './dto/create-user.dto';
-import { v4 as uuidv4 } from 'uuid';
+import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
 export class UsersService {
-  private users: User[] = [];
+  constructor(private readonly dbService: DatabaseService) {}
 
   getAll() {
-    return this.users;
+    return this.dbService.getAllUsers();
   }
 
   getById(id: string) {
-    const user = this.users.find((u) => u.id === id);
-
-    if (!user) {
-      throw new NotFoundException(`User with id ${id} not found`);
-    }
-
-    return user;
+    return this.dbService.getUserById(id);
   }
 
   create(dto: CreateUserDto) {
-    const { login, password } = dto;
-    const timestamp = Date.now();
-    const user: User = {
-      id: uuidv4(),
-      login,
-      password,
-      version: 1,
-      createdAt: timestamp,
-      updatedAt: timestamp,
-    };
-    this.users.push(user);
-    return user;
+    return this.dbService.createUser(dto);
   }
 
   updatePassword(id: string, dto: UpdatePasswordDto) {
-    const { oldPassword, newPassword } = dto;
-    const user = this.users.find((u) => u.id === id);
-
-    if (!user) {
-      throw new NotFoundException(`User with id ${id} not found`);
-    }
-
-    if (user.password !== oldPassword) {
-      throw new ForbiddenException(`Old password is incorrect`);
-    }
-
-    user.password = newPassword;
-    user.version += 1;
-    user.updatedAt = Date.now();
-
-    return user;
+    return this.dbService.updateUserPassword(id, dto);
   }
 
   delete(id: string) {
-    const userIndex = this.users.findIndex((u) => u.id === id);
-
-    if (userIndex === -1) {
-      throw new NotFoundException(`User with id ${id} not found`);
-    }
-
-    this.users.splice(userIndex, 1);
+    return this.dbService.deleteUser(id);
   }
 }

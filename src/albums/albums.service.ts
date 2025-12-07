@@ -1,82 +1,29 @@
-import {
-  forwardRef,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Album } from './interfaces/album.interface';
 import { AlbumDto } from './dto/album.dto';
-import { v4 as uuidv4 } from 'uuid';
-import { FavoritesService } from 'src/favorites/favorites.service';
-import { TracksService } from 'src/tracks/tracks.service';
+import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
 export class AlbumsService {
-  private albums: Album[] = [];
-
-  constructor(
-    @Inject(forwardRef(() => FavoritesService))
-    private readonly favoritesService: FavoritesService,
-    @Inject(forwardRef(() => TracksService))
-    private tracksService: TracksService,
-  ) {}
+  constructor(private readonly dbService: DatabaseService) {}
 
   getAll() {
-    return this.albums;
+    return this.dbService.getAllAlbums();
   }
 
   getById(id: string) {
-    const album = this.albums.find((a) => a.id === id);
-
-    if (!album) {
-      throw new NotFoundException(`Album with id ${id} not found`);
-    }
-
-    return album;
+    return this.dbService.getAlbumById(id);
   }
 
   create(dto: AlbumDto) {
-    const { name, year, artistId } = dto;
-    const album: Album = {
-      id: uuidv4(),
-      name,
-      year,
-      artistId,
-    };
-    this.albums.push(album);
-    return album;
+    return this.dbService.createAlbum(dto);
   }
 
   update(id: string, dto: AlbumDto): Album {
-    const albumIndex = this.albums.findIndex((a) => a.id === id);
-
-    if (albumIndex === -1) {
-      throw new NotFoundException(`Artist with id ${id} not found`);
-    }
-
-    const updatedAlbum = { ...this.albums[albumIndex], ...dto };
-    this.albums[albumIndex] = updatedAlbum;
-
-    return updatedAlbum;
+    return this.dbService.updateAlbum(id, dto);
   }
 
   delete(id: string) {
-    const albumIndex = this.albums.findIndex((a) => a.id === id);
-
-    if (albumIndex === -1) {
-      throw new NotFoundException(`Artist with id ${id} not found`);
-    }
-    this.favoritesService.removeAlbum(id);
-    this.albums.splice(albumIndex, 1);
-
-    this.tracksService.nullifyAlbumId(id);
-  }
-
-  nullifyArtistId(artistId: string) {
-    this.albums.forEach((a) => {
-      if (a.artistId === artistId) {
-        a.artistId = null;
-      }
-    });
+    this.dbService.deleteAlbum(id);
   }
 }

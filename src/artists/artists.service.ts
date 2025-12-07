@@ -1,76 +1,29 @@
-import {
-  forwardRef,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
+import { Injectable } from '@nestjs/common';
 import { Artist } from './interfaces/artist.interface';
 import { ArtistDto } from './dto/artist.dto';
-import { TracksService } from 'src/tracks/tracks.service';
-import { AlbumsService } from 'src/albums/albums.service';
-import { FavoritesService } from 'src/favorites/favorites.service';
+import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
 export class ArtistsService {
-  private artists: Artist[] = [];
-
-  constructor(
-    @Inject(forwardRef(() => FavoritesService))
-    private readonly favoritesService: FavoritesService,
-    private readonly tracksService: TracksService,
-    private readonly albumsServise: AlbumsService,
-  ) {}
+  constructor(private readonly dbService: DatabaseService) {}
 
   getAll() {
-    return this.artists;
+    return this.dbService.getAllArtists();
   }
 
   getById(id: string) {
-    const artist = this.artists.find((a) => a.id === id);
-
-    if (!artist) {
-      throw new NotFoundException(`Artist with id ${id} not found`);
-    }
-
-    return artist;
+    return this.dbService.getArtistById(id);
   }
 
   create(dto: ArtistDto) {
-    const { name, grammy } = dto;
-    const artist: Artist = {
-      id: uuidv4(),
-      name,
-      grammy,
-    };
-    this.artists.push(artist);
-    return artist;
+    return this.dbService.createArtist(dto);
   }
 
   update(id: string, dto: ArtistDto): Artist {
-    const artistIndex = this.artists.findIndex((a) => a.id === id);
-
-    if (artistIndex === -1) {
-      throw new NotFoundException(`Artist with id ${id} not found`);
-    }
-
-    const updatedArtist = { ...this.artists[artistIndex], ...dto };
-    this.artists[artistIndex] = updatedArtist;
-
-    return updatedArtist;
+    return this.dbService.updateArtist(id, dto);
   }
 
   delete(id: string) {
-    const artistIndex = this.artists.findIndex((a) => a.id === id);
-
-    if (artistIndex === -1) {
-      throw new NotFoundException(`Artist with id ${id} not found`);
-    }
-
-    this.favoritesService.removeArtist(id);
-    this.artists.splice(artistIndex, 1);
-
-    this.tracksService.nullifyArtistId(id);
-    this.albumsServise.nullifyArtistId(id);
+    return this.dbService.deleteArtist(id);
   }
 }
