@@ -3,7 +3,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
-RUN npm run buid
+RUN npm run build
 
 FROM node:24-alpine
 EXPOSE 4000
