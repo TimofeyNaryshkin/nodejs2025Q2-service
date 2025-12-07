@@ -53,7 +53,8 @@ For more information about OpenAPI/Swagger please visit https://swagger.io/.
 ## Vulnerability Scanning
 
 ```bash
-npm run audit
+npm run docker:scan:app
+npm run docker:scan:db
 ```
 
 ## Docker Hub
