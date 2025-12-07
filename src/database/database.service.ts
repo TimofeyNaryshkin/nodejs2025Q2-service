@@ -4,6 +4,7 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 import { AlbumDto } from 'src/albums/dto/album.dto';
 import { Album } from 'src/albums/interfaces/album.interface';
 import { ArtistDto } from 'src/artists/dto/artist.dto';
@@ -13,8 +14,6 @@ import { TrackDto } from 'src/tracks/dto/track.dto';
 import { Track } from 'src/tracks/interfaces/track.interface';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { UpdatePasswordDto } from 'src/users/dto/update-password.dto';
-import { User } from 'src/users/interfaces/user.interface';
-import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class DatabaseService {
@@ -35,18 +34,7 @@ export class DatabaseService {
   }
 
   async createUser(dto: CreateUserDto) {
-    const { login, password } = dto;
-    const timestamp = Date.now();
-    const user: User = {
-      id: uuidv4(),
-      login,
-      password,
-      version: 1,
-      createdAt: timestamp,
-      updatedAt: timestamp,
-    };
-
-    return this.prisma.user.create({ data: user });
+    return this.prisma.user.create({ data: dto });
   }
 
   async updateUserPassword(id: string, dto: UpdatePasswordDto) {
@@ -66,7 +54,6 @@ export class DatabaseService {
       data: {
         password: newPassword,
         version: { increment: 1 },
-        updatedAt: Date.now(),
       },
     });
   }
@@ -75,7 +62,10 @@ export class DatabaseService {
     try {
       await this.prisma.user.delete({ where: { id } });
     } catch (error) {
-      if (error.code === 'P2025') {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
         throw new NotFoundException(`User with id ${id} not found`);
       }
       throw error;
@@ -97,15 +87,7 @@ export class DatabaseService {
   }
 
   async createTrack(dto: TrackDto) {
-    const { name, artistId, albumId, duration } = dto;
-    const track: Track = {
-      id: uuidv4(),
-      name,
-      artistId,
-      albumId,
-      duration,
-    };
-    return this.prisma.track.create({ data: track });
+    return this.prisma.track.create({ data: dto });
   }
 
   async updateTrack(id: string, dto: TrackDto): Promise<Track> {
@@ -115,7 +97,10 @@ export class DatabaseService {
         data: dto,
       });
     } catch (error) {
-      if (error.code === 'P2025') {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
         throw new NotFoundException(`Track with id ${id} not found`);
       }
       throw error;
@@ -126,7 +111,10 @@ export class DatabaseService {
     try {
       await this.prisma.track.delete({ where: { id } });
     } catch (error) {
-      if (error.code === 'P2025') {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
         throw new NotFoundException(`Track with id ${id} not found`);
       }
       throw error;
@@ -148,14 +136,7 @@ export class DatabaseService {
   }
 
   async createAlbum(dto: AlbumDto) {
-    const { name, year, artistId } = dto;
-    const album: Album = {
-      id: uuidv4(),
-      name,
-      year,
-      artistId,
-    };
-    return this.prisma.album.create({ data: album });
+    return this.prisma.album.create({ data: dto });
   }
 
   async updateAlbum(id: string, dto: AlbumDto): Promise<Album> {
@@ -165,7 +146,10 @@ export class DatabaseService {
         data: dto,
       });
     } catch (error) {
-      if (error.code === 'P2025') {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
         throw new NotFoundException(`Album with id ${id} not found`);
       }
       throw error;
@@ -176,7 +160,10 @@ export class DatabaseService {
     try {
       await this.prisma.album.delete({ where: { id } });
     } catch (error) {
-      if (error.code === 'P2025') {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
         throw new NotFoundException(`Album with id ${id} not found`);
       }
       throw error;
@@ -198,14 +185,7 @@ export class DatabaseService {
   }
 
   async createArtist(dto: ArtistDto) {
-    const { name, grammy } = dto;
-    const artist: Artist = {
-      id: uuidv4(),
-      name,
-      grammy,
-    };
-
-    return this.prisma.artist.create({ data: artist });
+    return this.prisma.artist.create({ data: dto });
   }
 
   async updateArtist(id: string, dto: ArtistDto): Promise<Artist> {
@@ -215,7 +195,10 @@ export class DatabaseService {
         data: dto,
       });
     } catch (error) {
-      if (error.code === 'P2025') {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
         throw new NotFoundException(`Artist with id ${id} not found`);
       }
       throw error;
@@ -226,7 +209,10 @@ export class DatabaseService {
     try {
       await this.prisma.artist.delete({ where: { id } });
     } catch (error) {
-      if (error.code === 'P2025') {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
         throw new NotFoundException(`Artist with id ${id} not found`);
       }
       throw error;
@@ -262,7 +248,10 @@ export class DatabaseService {
     try {
       await this.prisma.favoriteTrack.delete({ where: { trackId: id } });
     } catch (error) {
-      if (error.code === 'P2025') {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
         throw new NotFoundException(`Track with id ${id} is not favorite`);
       }
       throw error;
@@ -284,7 +273,10 @@ export class DatabaseService {
     try {
       await this.prisma.favoriteAlbum.delete({ where: { albumId: id } });
     } catch (error) {
-      if (error.code === 'P2025') {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
         throw new NotFoundException(`Album with id ${id} is not favorite`);
       }
       throw error;
@@ -306,7 +298,10 @@ export class DatabaseService {
     try {
       await this.prisma.favoriteArtist.delete({ where: { artistId: id } });
     } catch (error) {
-      if (error.code === 'P2025') {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
         throw new NotFoundException(`Artist with id ${id} is not favorite`);
       }
       throw error;
