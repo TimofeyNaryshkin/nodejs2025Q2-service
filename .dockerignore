@@ -2,9 +2,12 @@ node_modules
 dist
 .git
 .gitignore
-.env
+.env*
 *.md
 Dockerfile*
 docker-compose*
 .prettierrc
 .eslintrc.js
+doc
+.vscode
+test

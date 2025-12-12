@@ -1,5 +1,6 @@
 services:
   app:
+    image: timofeinaryshkin/home-library-app:latest
     build:
       context: .
       dockerfile: Dockerfile
@@ -23,6 +24,7 @@ services:
     restart: always
 
   db:
+    image: timofeinaryshkin/home-library-db:latest
     build:
       context: .
       dockerfile: Dockerfile.postgres
