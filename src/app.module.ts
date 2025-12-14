@@ -6,8 +6,11 @@ import { TracksModule } from './tracks/tracks.module';
 import { UsersModule } from './users/users.module';
 import { LoggingMiddleware } from './logging/logging.middleware';
 import { LoggingModule } from './logging/logging.module';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { CatchEverythingFilter } from './exceptions/http-exception.filter';
+import { AuthModule } from './auth/auth.module';
+import { AuthGuard } from './auth/auth.guard';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -17,6 +20,7 @@ import { CatchEverythingFilter } from './exceptions/http-exception.filter';
     TracksModule,
     FavoritesModule,
     LoggingModule,
+    AuthModule,
   ],
   providers: [
     {
@@ -24,6 +28,7 @@ import { CatchEverythingFilter } from './exceptions/http-exception.filter';
       useClass: CatchEverythingFilter,
     },
   ],
+  controllers: [AppController],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

@@ -42,6 +42,20 @@ export class DatabaseService {
     };
   }
 
+  async getUserByLogin(login: string) {
+    const user = await this.prisma.user.findFirst({ where: { login } });
+
+    if (!user) {
+      throw new ForbiddenException(`Authentication failed`);
+    }
+
+    return {
+      ...user,
+      createdAt: user.createdAt.getTime(),
+      updatedAt: user.updatedAt.getTime(),
+    };
+  }
+
   async createUser(dto: CreateUserDto) {
     const user = await this.prisma.user.create({ data: dto });
     return {

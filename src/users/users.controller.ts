@@ -15,8 +15,10 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { UserEntity } from './entities/user.entity';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @UseInterceptors(ClassSerializerInterceptor)
+@ApiBearerAuth('JWT-auth')
 @Controller('user')
 export class UsersController {
   constructor(private usersService: UsersService) {}

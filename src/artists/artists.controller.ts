@@ -13,8 +13,10 @@ import {
 } from '@nestjs/common';
 import { ArtistsService } from './artists.service';
 import { ArtistDto } from './dto/artist.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @UseInterceptors(ClassSerializerInterceptor)
+@ApiBearerAuth('JWT-auth')
 @Controller('artist')
 export class ArtistsController {
   constructor(private artistsService: ArtistsService) {}

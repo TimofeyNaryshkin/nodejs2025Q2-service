@@ -30,8 +30,9 @@ export class CatchEverythingFilter implements ExceptionFilter {
     }
 
     const errorMessage = `${req.method} ${req.url} | Status: ${status} | Message: ${Array.isArray(message) ? message.join(', ') : message}`;
+    const stack = exception instanceof Error ? exception.stack : undefined;
 
-    this.loggingService.error(errorMessage, 'ExceptionFilter');
+    this.loggingService.error(errorMessage, stack, 'ExceptionFilter');
 
     res.status(status).json({
       statusCode: status,

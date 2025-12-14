@@ -13,8 +13,10 @@ import {
 } from '@nestjs/common';
 import { TracksService } from './tracks.service';
 import { TrackDto } from './dto/track.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @UseInterceptors(ClassSerializerInterceptor)
+@ApiBearerAuth('JWT-auth')
 @Controller('track')
 export class TracksController {
   constructor(private tracksService: TracksService) {}
