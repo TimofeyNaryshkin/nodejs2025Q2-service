@@ -114,7 +114,7 @@ export class LoggingService extends ConsoleLogger {
   }
 
   error(message: any, stack?: string, context?: string) {
-    super.error(message, stack, context)
+    super.error(message, stack, context);
     const formatedMessage = this.formatLogMessage('error', message, context);
     this.writeToFileSync(this.errorLogFilePath, formatedMessage);
   }
@@ -125,7 +125,7 @@ export class LoggingService extends ConsoleLogger {
   }
 
   log(message: any, context?: string) {
-    super.log(message, context)
+    super.log(message, context);
     const formatedMessage = this.formatLogMessage('log', message, context);
     this.writeToFileAsync(this.logFilePath, formatedMessage);
   }

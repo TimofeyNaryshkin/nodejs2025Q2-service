@@ -14,10 +14,15 @@ import { TrackDto } from 'src/tracks/dto/track.dto';
 import { Track } from 'src/tracks/interfaces/track.interface';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { UpdatePasswordDto } from 'src/users/dto/update-password.dto';
+import { hash } from 'bcrypt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class DatabaseService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private configService: ConfigService,
+  ) {}
 
   async getAllUsers() {
     const users = await this.prisma.user.findMany();
@@ -57,7 +62,15 @@ export class DatabaseService {
   }
 
   async createUser(dto: CreateUserDto) {
-    const user = await this.prisma.user.create({ data: dto });
+    const { login, password } = dto;
+    const hashedPassword = await hash(
+      password,
+      this.configService.get('CRYPT_SALT'),
+    );
+    const user = await this.prisma.user.create({
+      data: { login, password: hashedPassword },
+    });
+
     return {
       ...user,
       createdAt: user.createdAt.getTime(),
