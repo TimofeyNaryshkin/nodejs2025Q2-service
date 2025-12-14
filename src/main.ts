@@ -21,15 +21,18 @@ async function bootstrap() {
   );
 
   process.on('uncaughtExceptionMonitor', (error) => {
-    loggingService.error(`Captured error: ${error.message}`);
-    process.exit(1)
+    loggingService.fatal(
+      `Captured error: ${error.message}`,
+      'UncaughtException',
+    );
+    process.exit(1);
   });
 
   process.on('unhandledRejection', (reason) => {
     const message = `Unhandled rejection detected: ${
       reason instanceof Error ? reason.message : reason
     }`;
-    loggingService.error(message);
+    loggingService.error(message, 'UnhandledRejection');
   });
 
   const config = new DocumentBuilder()
