@@ -6,6 +6,8 @@ import { TracksModule } from './tracks/tracks.module';
 import { UsersModule } from './users/users.module';
 import { LoggingMiddleware } from './logging/logging.middleware';
 import { LoggingModule } from './logging/logging.module';
+import { APP_FILTER } from '@nestjs/core';
+import { CatchEverythingFilter } from './exceptions/http-exception.filter';
 
 @Module({
   imports: [
@@ -14,7 +16,13 @@ import { LoggingModule } from './logging/logging.module';
     AlbumsModule,
     TracksModule,
     FavoritesModule,
-    LoggingModule
+    LoggingModule,
+  ],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: CatchEverythingFilter,
+    },
   ],
 })
 export class AppModule implements NestModule {
