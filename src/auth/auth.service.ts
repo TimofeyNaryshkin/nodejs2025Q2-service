@@ -6,6 +6,7 @@ import {
 import { SignInDto } from './dto/sign-in.dto';
 import { DatabaseService } from 'src/database/database.service';
 import { JwtService } from '@nestjs/jwt';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -13,6 +14,11 @@ export class AuthService {
     private readonly dbService: DatabaseService,
     private jwtService: JwtService,
   ) {}
+
+  async signUp(dto: CreateUserDto) {
+    await this.dbService.createUser(dto);
+    return 'User created successfully';
+  }
 
   async signIn(dto: SignInDto) {
     const { login, password } = dto;
@@ -22,7 +28,7 @@ export class AuthService {
       throw new ForbiddenException(`Authentication failed`);
     }
 
-    const payload = {sub: user.id, username: user.login}
-    return {access_token: await this.jwtService.signAsync(payload)}
+    const payload = { sub: user.id, username: user.login };
+    return { access_token: await this.jwtService.signAsync(payload) };
   }
 }
