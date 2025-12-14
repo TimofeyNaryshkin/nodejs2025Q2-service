@@ -29,18 +29,14 @@ export class CatchEverythingFilter implements ExceptionFilter {
       }
     }
 
-    const errorMessage = `${req.method} ${req.baseUrl} - Status: ${status} - Message: ${Array.isArray(message) ? message.join(', ') : message}`;
+    const errorMessage = `${req.method} ${req.url} | Status: ${status} | Message: ${Array.isArray(message) ? message.join(', ') : message}`;
 
-    if (exception instanceof Error) {
-      this.loggingService.error(errorMessage, exception.stack);
-    } else {
-      this.loggingService.error(errorMessage, String(exception));
-    }
+    this.loggingService.error(errorMessage, 'ExceptionFilter');
 
     res.status(status).json({
       statusCode: status,
       timeStamp: new Date().toISOString(),
-      path: req.baseUrl,
+      path: req.url,
       message,
     });
   }

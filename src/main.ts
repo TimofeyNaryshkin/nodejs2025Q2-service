@@ -20,6 +20,18 @@ async function bootstrap() {
     }),
   );
 
+  process.on('uncaughtExceptionMonitor', (error) => {
+    loggingService.error(`Captured error: ${error.message}`);
+    process.exit(1)
+  });
+
+  process.on('unhandledRejection', (reason) => {
+    const message = `Unhandled rejection detected: ${
+      reason instanceof Error ? reason.message : reason
+    }`;
+    loggingService.error(message);
+  });
+
   const config = new DocumentBuilder()
     .setTitle('Home Library Service')
     .setDescription('Home music library service')
