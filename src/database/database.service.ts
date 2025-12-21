@@ -14,7 +14,7 @@ import { TrackDto } from 'src/tracks/dto/track.dto';
 import { Track } from 'src/tracks/interfaces/track.interface';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { UpdatePasswordDto } from 'src/users/dto/update-password.dto';
-import { hash } from 'bcrypt';
+import { compare, hash } from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -62,17 +62,16 @@ export class DatabaseService {
   }
 
   async createUser(dto: CreateUserDto) {
-    const { login, password } = dto;
-    const hashedPassword = await hash(
-      password,
-      this.configService.get('CRYPT_SALT'),
-    );
+    const { login, password: pass } = dto;
+    const hashedPassword = await hash(pass, 10);
     const user = await this.prisma.user.create({
       data: { login, password: hashedPassword },
     });
 
+    const { password, ...rest } = user;
+
     return {
-      ...user,
+      ...rest,
       createdAt: user.createdAt.getTime(),
       updatedAt: user.updatedAt.getTime(),
     };
@@ -86,14 +85,18 @@ export class DatabaseService {
       throw new NotFoundException(`User with id ${id} not found`);
     }
 
-    if (user.password !== oldPassword) {
+    const isOldPasswordValid = await compare(oldPassword, user.password);
+
+    if (!isOldPasswordValid) {
       throw new ForbiddenException(`Old password is incorrect`);
     }
+
+    const hashedNewPassword = await hash(newPassword, 10);
 
     const updatedUser = await this.prisma.user.update({
       where: { id },
       data: {
-        password: newPassword,
+        password: hashedNewPassword,
         version: { increment: 1 },
       },
     });

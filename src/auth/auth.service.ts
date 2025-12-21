@@ -20,8 +20,7 @@ export class AuthService {
   ) {}
 
   async signUp(dto: CreateUserDto) {
-    await this.dbService.createUser(dto);
-    return 'User created successfully';
+    return await this.dbService.createUser(dto);
   }
 
   async signIn(dto: SignInDto) {
@@ -38,13 +37,13 @@ export class AuthService {
   }
 
   async refresh(dto: RefreshDto) {
-    const { refresh_token } = dto;
-    if (!refresh_token) {
+    const { refreshToken } = dto;
+    if (!refreshToken) {
       throw new UnauthorizedException('Refresh token is required');
     }
 
     try {
-      const payload = await this.jwtService.verifyAsync(refresh_token);
+      const payload = await this.jwtService.verifyAsync(refreshToken);
 
       const tokens = await this.generateTokens(payload.sub, payload.username);
       return tokens;
@@ -56,7 +55,7 @@ export class AuthService {
   private async generateTokens(userId: string, login: string) {
     const payload = { sub: userId, username: login };
 
-    const [access_token, refresh_token] = await Promise.all([
+    const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
         secret: this.configService.get('JWT_SECRET_KEY'),
         expiresIn: this.configService.get('TOKEN_EXPIRE_TIME'),
@@ -68,8 +67,8 @@ export class AuthService {
     ]);
 
     return {
-      access_token,
-      refresh_token,
+      accessToken,
+      refreshToken,
     };
   }
 }

@@ -28,14 +28,15 @@ export class AuthGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest();
-    const token = this.extractTokenFromHeader(request);
-    if (!token) {
-      throw new UnauthorizedException();
-    }
 
     const publicPaths = ['/doc'];
     if (publicPaths.some((path) => request.path.startsWith(path))) {
       return true;
+    }
+
+    const token = this.extractTokenFromHeader(request);
+    if (!token) {
+      throw new UnauthorizedException();
     }
 
     try {
